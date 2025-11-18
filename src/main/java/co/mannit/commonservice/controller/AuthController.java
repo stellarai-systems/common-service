@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ import co.mannit.commonservice.common.util.JwtUtil;
 import co.mannit.commonservice.dao.UserDao;
 import co.mannit.commonservice.pojo.User;
 import co.mannit.commonservice.service.PasswordService;
+import co.mannit.commonservice.service.SignupService;
 
 @RestController
 public class AuthController {
@@ -40,7 +42,8 @@ public class AuthController {
     JwtUtil jwtUtils;
     @Autowired
     PasswordService serv;
-    
+    @Autowired
+    SignupService signupService;
     @PostMapping("/signin")
     public Response<String> authenticateUser(@RequestBody User user) {
         Authentication authentication = authenticationManager.authenticate(
@@ -106,7 +109,13 @@ public class AuthController {
         //return ResponseEntity.ok("Password reset successful");
         return Response.buildSuccessMsg(200, "Password reset successful",serv.resetPassword(payload));
     }
-
+    @DeleteMapping("eDeleteU")
+    public Response<?>Updelete(@RequestBody(required=false) String userDetails,
+		@RequestParam String resourceId) throws Exception{
+	long count = signupService.deleteResource(resourceId);
+	return Response.buildSuccessMsg(200, "Deleted Successfully", String.format("%s records deleted successfully", count));
+		
+	}
 
     
 }

@@ -1,5 +1,6 @@
 package co.mannit.commonservice.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.mannit.commonservice.common.Response;
 import co.mannit.commonservice.pojo.CountResponse;
+import co.mannit.commonservice.pojo.FieldCount;
+import co.mannit.commonservice.pojo.MultiCountResponse;
 import co.mannit.commonservice.pojo.PaginationReqParam;
 import co.mannit.commonservice.service.CollectionService;
 
@@ -149,6 +152,27 @@ public class AuthRetrieveCollection {
 			String doc = collectionService.saveCollectionBulk(domain, subdomain, userId, colname,json);
 			
 			return Response.buildSuccessMsg(200, "Resources Created Successfully", doc);
+		}
+		@GetMapping("retrievemulticount")
+		public Response<?> getMultiCount(@Validated PaginationReqParam paginationReq,
+				@RequestParam Map<String, String> param) throws Exception {
+			logger.debug("<retrievemulticount> paginationReq {} param {}", paginationReq, param);
+
+			List<FieldCount> fieldCounts = new ArrayList<>();
+			String col = param.get("colname");
+			param.remove("colname");
+			for (Map.Entry<String, String> entry : param.entrySet()) {
+				String field = entry.getKey();
+				String value = entry.getValue();
+				for (String val : value.split(",")) {
+		            long count = collectionService.retrieveCountForField(paginationReq, field, val.trim(), col);
+		            fieldCounts.add(new FieldCount(field, val.trim(), count));
+		        }
+			}
+
+			MultiCountResponse response = new MultiCountResponse(fieldCounts);
+
+			return Response.buildSuccessMsg(200, "Multiple Counts Retrieved Successfully", response);
 		}
 	
 }

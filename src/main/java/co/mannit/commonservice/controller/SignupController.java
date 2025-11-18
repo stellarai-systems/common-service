@@ -95,12 +95,6 @@ public class SignupController {
 		logger.debug("</register>");
 		return Response.buildSuccessMsg(200, "User Successfully Registered", logDetails);
 	}
-	@DeleteMapping("eDeleteU")
-    public Response<?>Updelete(@RequestBody(required=false) String userDetails,
-		@RequestParam String resourceId) throws Exception{
-	long count = signupService.deleteResource(resourceId);
-	return Response.buildSuccessMsg(200, "Deleted Successfully", String.format("%s records deleted successfully", count));
-		
-	}
+	
 	
 }

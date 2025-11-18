@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,6 +13,7 @@ import co.mannit.commonservice.common.Response;
 import co.mannit.commonservice.service.CollectionService;
 
 @RestController
+@RequestMapping("/auth")
 public class ComboController {
 
 	private static final Logger logger = LogManager.getLogger(ComboController.class);
